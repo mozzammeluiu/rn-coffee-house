@@ -18,7 +18,7 @@ function sortCoffee(coffeeList: any, category: string) {
   }
   return coffeeList.filter((coffee: any) => coffee.name === category);
 }
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: any) => {
   const coffeeList = useStore((state: any) => state.coffeeList);
   const beansList = useStore((state: any) => state.beansList);
   const [categories, setCategories] = React.useState<string[]>(['All', ...getCategories(coffeeList)]);
@@ -131,6 +131,11 @@ const HomeScreen = () => {
 
           {/* Coffee Flatlist */}
           <FlatList
+            ListEmptyComponent={
+              <View style={styles.emptyListContainer}>
+                <Text style={styles.categoryText}>No Coffee Available</Text>
+              </View>
+            }
             ref={listRef}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -139,7 +144,13 @@ const HomeScreen = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => {
               return (
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate('Details', {
+                    index: item.index,
+                    id: item.id,
+                    type: item.type,
+                  });
+                }}>
                   <CoffeeCard id={item.id}
                     index={item.index}
                     type={item.type}
@@ -172,7 +183,13 @@ const HomeScreen = () => {
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => { }}>
+                  onPress={() => {
+                    navigation.navigate('Details', {
+                      index: item.index,
+                      id: item.id,
+                      type: item.type,
+                    });
+                  }}>
                   <CoffeeCard
                     id={item.id}
                     index={item.index}
@@ -241,7 +258,8 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: FONTSIZE.size_16,
     fontFamily: FONTFAMILY.poppins_semibold,
-    marginBottom: SPACING.space_4
+    marginBottom: SPACING.space_4,
+    color: COLORS.primaryLightGreyHex,
   },
   activeCategory: {
     height: SPACING.space_10,

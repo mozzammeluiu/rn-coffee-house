@@ -14,6 +14,20 @@ export const useStore = create(
             favoritesList: [],
             cartList: [],
             orderHistoryList: [],
+            addToCart: (cartItem: any) => {
+                set((state: any) => {
+                    console.log('cartItem', state);
+                    //check if item is already in cart
+                    const itemIndex = state.cartList.findIndex((item: any) => item.id === cartItem.id);
+                    if (itemIndex === -1) {
+                        state.cartList.push(cartItem);
+                        state.cartPrice += parseInt(cartItem.price.price);
+                    }else {
+                        state.cartList.splice(itemIndex, 1);
+                        state.cartPrice -= parseInt(cartItem.price.price);
+                    }
+                });
+            }
         }), { name: "coffee-app", storage: createJSONStorage(() => AsyncStorage) },
     )
 );
